@@ -18,11 +18,13 @@ public class Player : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private new Rigidbody2D rigidbody2D;
+    private Animator animator;
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         rigidbody2D = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -30,6 +32,8 @@ public class Player : MonoBehaviour
         float moveInput = Input.GetAxis("Horizontal");
         rigidbody2D.velocity = new Vector2(moveInput * moveSpeed, rigidbody2D.velocity.y);
         spriteRenderer.flipX = rigidbody2D.velocity.x < 0;
+
+        animator.SetBool("IsMoving", Mathf.Abs(moveInput) > 0.01f);
 
         if (transform.position.y < fallThresholdY)
         {
@@ -50,6 +54,11 @@ public class Player : MonoBehaviour
         {
             isGrounded = true;
         }
+    }
+
+    public void FlipVelocity()
+    {
+        rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, -rigidbody2D.velocity.y);
     }
 
     private IEnumerator GroundCheckWait()
